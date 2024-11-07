@@ -1,0 +1,7 @@
+#define CHAT_ID "5281591556"
+#define TELEGRAM_DOMAIN "api.telegram.org"
+#define BOT_TOKEN "8078406329:AAF8TU6wUyeD-o3bHDcvzZiE9wGWoqF_gnQ"
+
+#define SECRET_WIFI_NAME "MSI 0176"
+#define SECRET_WIFI_PASSWORD "n21dccn021"
+#define FASTAPI_WEBSOCKET_IP "127.0.0.1"
