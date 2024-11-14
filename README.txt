@@ -1,31 +1,23 @@
-1. Thực hiện xây dựng model và dataset với 2 class trên Teachable
-2. Xuất model với option TensorFlow Lite > Quantized để đơn giản hoá mô hình và được sử dụng trong các dạng toán 8-bit (thay vì 32-bit với keras)
-3. Sử dụng công cụ xxd (và python) để convert model.tflite > model.cc
+1. Setup:
+- Setup ESP32 Camera
+- Setup WiFiSecure: config ESP32 Access Point - Station (AP_STA) + config telegram certificate
+- Setup ESP32 Camera Server
 
+2. Loop:
+- Gửi ảnh gốc
+- While: liên tục lấy response cuối từ telegram
+- Kiểm tra option từ telegram
 
-    with open(filepath, "rb") as f:
-        data = f.read()
+3. cmd_handler
+- 2 loại input:
+	+ {var: val}: các option cơ bản (trên giao diện website) như quality, brightness,...	==> Chỉ cần 2 tham số
+	+ "myCmd": các option nâng cao như đọc địa chỉ mac, restart, bật tắt flash,...		==> Cần hơn 3 tham số
 
-    # Initialization (with C arr head)
-    c_array = "const unsigned char model_data[] = {"
+4. stream_handler
+- Nhận một stream request từ Client.
+- Thực hiện lấy ảnh theo yêu cầu bằng ESP32-Cam thông qua con trỏ fb.
+- Xử lý lại ảnh để phù hợp với luồng hiện tại (size ảnh, dạng tệp,...)
+- Trả về ảnh cho client, dọn dẹp bộ nhớ đệm ESP32-Cam.
+- Luồng luôn hoạt động trong hàm while(true)
+- Nếu có lỗi xảy ra thì dừng vòng while
 
-    # Convert each by of bites to hex.
-    for i, byte in enumerate(data):
-        if i % 12 == 0:
-            c_array += "\n    "
-        c_array += "0x{:02x}, ".format(byte)
-
-    # Assign result, and tail
-    c_array = c_array.rstrip(", ") + "\n};\n"
-
-    # Add length information as needed
-    c_array += "const unsigned int model_data_len = {};\n".format(len(data))
-
-    with open("model_data.cc", "w") as f:
-        f.write(c_array)
-    print("model_data.cc has been created successfully")
-
-4. Di chuyển file vào thư mục, đặt cùng cấp với file arduino IDE để thực hiện import và xử lý
-
-5. C:\Users\<Your-Username>\AppData\Local\Arduino15\packages\esp32\hardware\esp32\<version>
-esp32cam.upload.speed=
